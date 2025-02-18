@@ -15,7 +15,7 @@ public class CustomerController {
     private CustomerService customerService;
     @GetMapping("/get")
     public List<CustomerDTO> getCustomer(){
-        List<CustomerDTO> customers = customerService.getAllEmployee();
+        List<CustomerDTO> customers = customerService.getAllCustomer();
         return customers;
     }
     @PostMapping("/save")

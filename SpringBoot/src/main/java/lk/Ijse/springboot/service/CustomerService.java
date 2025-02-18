@@ -20,10 +20,10 @@ public class CustomerService {
         return true;
 
     }
-    public List<CustomerDTO> getAllEmployee(){
-        List<Customer> employeeList = customerRepo.findAll();
+    public List<CustomerDTO> getAllCustomer(){
+        List<Customer> customerList = customerRepo.findAll();
         List<CustomerDTO> customerDTOS = new ArrayList<>();
-        for (Customer customerDTO : employeeList){
+        for (Customer customerDTO : customerList){
             CustomerDTO customerDTO1 = new CustomerDTO(customerDTO.getId(), customerDTO.getName(), customerDTO.getAddress());
             customerDTOS.add(customerDTO1);
         }
