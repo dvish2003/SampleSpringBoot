@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shop POS System</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+</head>
+<body>
+<!-- Navigation Bar -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container">
+        <a class="navbar-brand" href="#">POS System</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item"><a class="nav-link" href="Customer.html">Customer</a></li>
+                <li class="nav-item"><a class="nav-link" href="Item.html">Item</a></li>
+                <li class="nav-item"><a class="nav-link" href="Order.html">Order</a></li>
+                <li class="nav-item"><a class="nav-link" href="#order-history">Order History</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- Order Management Section -->
+<section id="order" class="container py-5">
+    <div class="card shadow p-4">
+        <h2 class="mb-4">Order Management</h2>
+        <form class="mb-4">
+            <div class="row mb-3">
+                <div class="col-md-3">
+                    <label for="customerName" class="form-label">Customer Name</label>
+                    <select class="form-control" id="customerName">
+                        <option>Select Customer</option>
+                        <!-- Populate dynamically -->
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label for="customerId" class="form-label">Customer ID</label>
+                    <input type="text" class="form-control" id="customerId" placeholder="Customer ID" readonly>
+                </div>
+                <div class="col-md-3">
+                    <label for="itemName" class="form-label">Item Name</label>
+                    <select class="form-control" id="itemName">
+                        <option>Select Item</option>
+                        <!-- Populate dynamically -->
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label for="itemId" class="form-label">Item ID</label>
+                    <input type="text" class="form-control" id="itemId" placeholder="Item ID" readonly>
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-md-3">
+                    <label for="itemPrice" class="form-label">Item Price</label>
+                    <input type="text" class="form-control" id="itemPrice" placeholder="Price" readonly>
+                </div>
+                <div class="col-md-3">
+                    <label for="availableQty" class="form-label">Available Qty</label>
+                    <input type="text" class="form-control" id="availableQty" placeholder="Available Qty" readonly>
+                </div>
+                <div class="col-md-3">
+                    <label for="buyingQty" class="form-label">Buying Qty</label>
+                    <input type="number" class="form-control" id="buyingQty" placeholder="Enter Qty">
+                </div>
+                <div class="col-md-3">
+                    <label for="total" class="form-label">Total</label>
+                    <input type="text" class="form-control" id="total" placeholder="Total" readonly>
+                </div>
+            </div>
+            <div class="d-flex gap-2">
+                <button type="button" class="btn btn-success">Add to Order</button>
+                <button type="button" class="btn btn-danger">Remove</button>
+                <button type="reset" class="btn btn-secondary">Clear</button>
+            </div>
+        </form>
+
+        <!-- Order Table -->
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th scope="col">Customer ID</th>
+                <th scope="col">Customer Name</th>
+                <th scope="col">Item ID</th>
+                <th scope="col">Item Name</th>
+                <th scope="col">Price</th>
+                <th scope="col">Qty</th>
+                <th scope="col">Total</th>
+            </tr>
+            </thead>
+            <tbody>
+            <!-- Data will be populated dynamically -->
+            </tbody>
+        </table>
+    </div>
+</section>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
