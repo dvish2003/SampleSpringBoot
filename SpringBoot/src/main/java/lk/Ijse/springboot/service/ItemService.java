@@ -1,11 +1,17 @@
 package lk.Ijse.springboot.service;
 
+import lk.Ijse.springboot.dto.CustomerDTO;
 import lk.Ijse.springboot.dto.ItemDTO;
+import lk.Ijse.springboot.entity.Customer;
 import lk.Ijse.springboot.entity.Item;
 import lk.Ijse.springboot.repo.ItemRepo;
+import lk.Ijse.springboot.util.VarList;
+import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -13,31 +19,39 @@ import java.util.stream.Collectors;
 public class ItemService {
     @Autowired
 private ItemRepo itemRepo;
-    public List<ItemDTO> getAllItem() {
-        List<Item> items = itemRepo.findAll();
-        return items.stream().map(item -> new ItemDTO(item.getId(), item.getName(), item.getPrice(), item.getQty())).collect(Collectors.toList());
-    }
-
-    public boolean saveItem(ItemDTO itemDTO) {
-        Item item = new Item(itemDTO.getId(), itemDTO.getName(), itemDTO.getPrice(),itemDTO.getQty());
-        itemRepo.save(item);
-        return true;
-    }
-
-    public boolean UpdateItem(ItemDTO itemDTO) {
-        if(itemRepo.existsById(itemDTO.getId())){
-            Item item = new Item(itemDTO.getId(), itemDTO.getName(), itemDTO.getPrice(),itemDTO.getQty());
-            itemRepo.save(item);
-            return true;
+    @Autowired
+    private ModelMapper modelMapper;
+    public String saveItem(ItemDTO itemDTO){
+        if (itemRepo.existsById(itemDTO.getId())){
+            return VarList.RSP_DUPLICATED;
+        }else {
+            itemRepo.save(modelMapper.map(itemDTO, Item.class));
+            return VarList.RSP_SUCCESS;
         }
-        return false;
+
+    }
+    public List<ItemDTO> getAllItem(){
+        List<Item> itemList = itemRepo.findAll();
+        return modelMapper.map(itemList,new TypeToken<ArrayList<ItemDTO>>(){
+        }.getType());
     }
 
-    public boolean DeleteItem(String id) {
-        if(itemRepo.existsById(Integer.valueOf(id))){
-            itemRepo.deleteById(Integer.parseInt(id));
-            return true;
+    public String UpdateItem(ItemDTO itemDTO) {
+        if (itemRepo.existsById(itemDTO.getId())){
+            itemRepo.save(modelMapper.map(itemDTO, Item.class));
+            return VarList.RSP_SUCCESS;
+
+        }else {
+            return VarList.RSP_NO_DATA_FOUND;
         }
-        return false;
+    }
+
+    public String DeleteItem(String id) {
+        if (itemRepo.existsById(Integer.valueOf(id))){
+            itemRepo.deleteById(Integer.valueOf(id));
+            return VarList.RSP_SUCCESS;
+        }else {
+            return VarList.RSP_NO_DATA_FOUND;
+        }
     }
 }

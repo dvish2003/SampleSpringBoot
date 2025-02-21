@@ -179,12 +179,12 @@
             console.log(response);
            if(response.code === "00"){
                 $('#customerBody').empty();
-                response.content.forEach(emp => {
+                response.content.forEach(cus => {
                     $('#customerBody').append(`
                         <tr>
-                            <td>${emp.id}</td>
-                            <td>${emp.name}</td>
-                            <td>${emp.address}</td>
+                            <td>${cus.id}</td>
+                            <td>${cus.name}</td>
+                            <td>${cus.address}</td>
                         </tr>
                     `);
                 })
