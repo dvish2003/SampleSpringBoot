@@ -1,24 +1,32 @@
 package lk.Ijse.springboot.entity;
 
+/**
+ * Author: vishmee
+ * Date: 2/22/25
+ * Time: 10:44 PM
+ * Description:
+ */
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
+
 
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class Item{
+public class OrderDetail {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    private String name;
-    private double price;
     private int qty;
-    @OneToMany(mappedBy = "item", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<OrderDetail> orderDetails;
+    private double price;
 
+    @ManyToOne
+    private Order order;
+
+    @ManyToOne
+    private Item item;
 }

@@ -93,6 +93,7 @@
                 if(response.code === "00"){
                     alert("Item added successfully");
                     getAll();
+                    clearbtn();
                 }
             },
             error: function(error) {
@@ -118,6 +119,7 @@
                 if(response.code === "00"){
                     alert("Item updated successfully");
                     getAll();
+                    clearbtn();
                 }
             },
             error: function(error) {
@@ -137,6 +139,7 @@
                 if(response.code === "00"){
                     alert("Item deleted successfully");
                     getAll();
+                    clearbtn();
                 }
             },
             error: function(error) {

@@ -54,4 +54,8 @@ public class CustomerService {
             return VarList.RSP_NO_DATA_FOUND;
         }
     }
+    public CustomerDTO FindByID(int id){
+        Customer customer = customerRepo.findById(id).orElse(null);
+        return modelMapper.map(customer,CustomerDTO.class);
+    }
 }

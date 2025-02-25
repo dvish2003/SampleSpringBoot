@@ -95,6 +95,7 @@
                 if(response.code === "00"){
                     alert("Customer added successfully");
                     getAll();
+                    clearbtn();
                 }else{
                     alert(response.message);
                 }
@@ -127,6 +128,7 @@
                 if(response.code === "00"){
                     alert("Customer updated successfully");
                     getAll();
+                    clearbtn();
                 } else{
                     alert(response.message);
                 }
@@ -151,6 +153,7 @@
                 if(response.code === "00"){
                     alert("Customer deleted successfully");
                     getAll();
+                    clearbtn();
                 } else{
                     alert(response.message);
                 }
@@ -164,9 +167,9 @@
         });
     }
     function clearbtn(){
-        $('#customerId').val('');
-        $('#customerName').val('');
-        $('#customerAddress').val('');
+        $('#customerId').val("");
+        $('#customerName').val("");
+        $('#customerAddress').val("");
     }
 
 

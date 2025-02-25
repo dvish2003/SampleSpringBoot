@@ -41,12 +41,12 @@
                 <div class="col-md-3">
                     <label for="customerId" class="form-label">Customer ID</label>
                     <input type="text" class="form-control" id="customerId" placeholder="Customer ID" readonly>
+                    <input type="hidden" class="form-control" id="customerAddress" readonly>
                 </div>
                 <div class="col-md-3">
                     <label for="itemName" class="form-label">Item Name</label>
                     <select class="form-control" id="itemName">
                         <option>Select Item</option>
-                        <!-- Populate dynamically -->
                     </select>
                 </div>
                 <div class="col-md-3">
@@ -73,9 +73,10 @@
                 </div>
             </div>
             <div class="d-flex gap-2">
-                <button type="button" class="btn btn-success">Add to Order</button>
+                <button type="button" id="addToCart" class="btn btn-success">Add to Cart</button>
                 <button type="button" class="btn btn-danger">Remove</button>
                 <button type="reset" class="btn btn-secondary">Clear</button>
+                <button type="button" class="btn btn-secondary" onclick="placeOrder()">Place Order</button>
             </div>
         </form>
 
@@ -101,5 +102,197 @@
 
 <!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    let cart = [];
+    clearFields();
+
+    function clearFields() {
+        $('#customerId').val('');
+        $('#customerAddress').val('');
+        $('#itemId').val('');
+        $('#itemPrice').val('');
+        $('#availableQty').val('');
+        $('#buyingQty').val('');
+        $('#total').val('');
+    }
+
+    function getTotal() {
+        let total = cart.reduce((sum, item) => sum + item.total, 0);
+        $('#total').val(total);
+    }
+
+    function placeOrder() {
+        let orderID = 1;
+        let customerId = $('#customerId').val();
+        let total = $('#total').val();
+
+        let orderDTO = {
+            id: orderID,
+            total: total,
+            customer: {
+                id: customerId,
+                name: $('#customerName').val(),
+                address: $('#customerAddress').val()
+            }
+        };
+
+        let orderDetailsDTO = cart.map(item => ({
+            id: 0,
+            qty: item.qty,
+            price: item.price,
+            order: { id: orderID },
+            item: { id: item.itemId }
+        }));
+
+
+        $.ajax({
+            url: "http://localhost:8080/api/v1/orders/placeOrder",
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({
+                orderDTO: orderDTO,
+                orderDetailsDTO: orderDetailsDTO
+            }),
+            success: function (response) {
+                if (response.code === "00") {
+                    alert("Order placed successfully");
+                    clearFields();
+                    cart = [];
+                    updateCartTable();
+                } else {
+                    alert(response.message);
+                }
+            },
+            error: function (error) {
+                alert("Error while placing order");
+                console.error(error);
+            }
+        });
+    }
+
+    $(document).ready(function () {
+        loadCustomers();
+        loadItems();
+        clearFields();
+
+        function loadCustomers() {
+            $.ajax({
+                method: 'GET',
+                url: "http://localhost:8080/api/v1/customer/get",
+                success: function (response) {
+                    if (response.code === "00") {
+                        $('#customerName').empty().append('<option value="">Select Customer</option>');
+                        response.content.forEach(cus => {
+                            $('#customerName').append(`<option value="${cus.id}" data-address="${cus.address}">${cus.name}</option>`);
+                        });
+                    }
+                },
+                error: function () {
+                    alert("Error loading customers.");
+                }
+            });
+        }
+
+        function loadItems() {
+            $.ajax({
+                method: 'GET',
+                url: "http://localhost:8080/api/v1/item/get",
+                success: function (response) {
+                    if (response.code === "00") {
+                        $('#itemName').empty().append('<option value="">Select Item</option>');
+                        response.content.forEach(item => {
+                            $('#itemName').append(`<option value="${item.id}" data-price="${item.price}" data-qty="${item.qty}">${item.name}</option>`);
+                        });
+                    }
+                },
+                error: function () {
+                    alert("Error loading items.");
+                }
+            });
+        }
+
+        $('#customerName').on('change', function () {
+            let selectedOption = $(this).find(':selected');
+            $('#customerId').val(selectedOption.val() || "");
+            $('#customerAddress').val(selectedOption.data('address') || "");
+        });
+
+        $('#itemName').on('change', function () {
+            let selectedOption = $(this).find(':selected');
+            $('#itemId').val(selectedOption.val() || "");
+            $('#itemPrice').val(selectedOption.data('price') || "");
+            $('#availableQty').val(selectedOption.data('qty') || "");
+        });
+
+        $('#buyingQty').on('input', function () {
+            let price = parseFloat($('#itemPrice').val()) || 0;
+            let qty = parseInt($(this).val()) || 0;
+            $('#total').val(price * qty);
+        });
+
+        $('#addToCart').on('click', function () {
+            let customerId = $('#customerId').val();
+            let customerName = $('#customerName option:selected').text();
+            let itemId = $('#itemId').val();
+            let itemName = $('#itemName option:selected').text();
+            let price = parseFloat($('#itemPrice').val());
+            let qty = parseInt($('#buyingQty').val());
+            let total = price * qty;
+            let Item = {
+                id: itemId,
+                name: itemName,
+                price: price,
+                qty: qty
+            }
+
+            if (!customerId || !itemId || qty <= 0) {
+                alert("Please select a customer, item, and valid quantity.");
+                return;
+            }
+
+          /*  let cartItem = { customerId, customerName, itemId, itemName, price, qty, total };*/
+            let cartItem = {
+                customerId,
+                customerName,
+                itemId,
+                itemName,
+                price,
+                qty,
+                total,
+                item: { id: itemId }
+            };
+            cart.push(cartItem);
+            updateCartTable();
+            getTotal();
+        });
+
+        function updateCartTable() {
+            let tbody = $('table tbody');
+            tbody.empty();
+            cart.forEach((item, index) => {
+                tbody.append(`<tr>
+                <td>${item.customerId}</td>
+                <td>${item.customerName}</td>
+                <td>${item.itemId}</td>
+                <td>${item.itemName}</td>
+                <td>${item.price}</td>
+                <td>${item.qty}</td>
+                <td>${item.total}</td>
+                <td><button class="btn btn-danger btn-sm remove-item" data-index="${index}">Remove</button></td>
+            </tr>`);
+            });
+        }
+
+        $(document).on('click', '.remove-item', function () {
+            let index = $(this).data('index');
+            cart.splice(index, 1);
+            updateCartTable();
+            getTotal();
+        });
+    });
+
+</script>
+
 </body>
 </html>

@@ -53,5 +53,13 @@ private ItemRepo itemRepo;
         }else {
             return VarList.RSP_NO_DATA_FOUND;
         }
+
+    }
+    public ItemDTO FindByID(int id) {
+        if (itemRepo.existsById(id)){
+            return modelMapper.map(itemRepo.findById(id).get(), ItemDTO.class);
+        } else {
+            return null;
+        }
     }
 }
