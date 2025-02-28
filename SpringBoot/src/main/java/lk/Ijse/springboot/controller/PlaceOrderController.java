@@ -38,7 +38,6 @@ public class PlaceOrderController {
 
     @PostMapping("/placeOrder")
     public ResponseEntity placeOrder(@RequestBody PlaceOrderDTO placeOrderDTO){
-        System.out.println("data awa hutto");
         System.out.println("sadassad" +placeOrderDTO.getOrderDTO().getCustomer().getName());
         System.out.println("sadassad" +placeOrderDTO.getOrderDTO().getCustomer().getName());
         System.out.println("sadasssdasdasad" +placeOrderDTO);
@@ -58,7 +57,6 @@ public class PlaceOrderController {
             placeOrderDTO1.setOrderDTO(orderDTO);
             placeOrderDTO1.setOrderDetailsDTO(orderDetailDTO);
 
-            System.out.println("data awa hutto");
             System.out.println("sadassad     " +placeOrderDTO1.getOrderDTO().getCustomer().getName());
             System.out.println("sadasssdasdasad      " +placeOrderDTO1);
 
